@@ -1,0 +1,60 @@
+services:
+  mysql:
+    image: mysql:8.0
+    expose:
+      - "3306"
+    environment:
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASS}
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASS}
+    volumes:
+      - mysql-data:/var/lib/mysql
+    networks:
+      - punch-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  redis:
+    image: redis:7.2-alpine
+    expose:
+      - "6379"
+    environment:
+      REDIS_PASSWORD: ${REDIS_PASS}
+    command: ["redis-server", "--requirepass", "${REDIS_PASS}"]
+    volumes:
+      - redis-data:/data
+    networks:
+      - punch-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "${REDIS_PASS}", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  dozzle:
+    image: amir20/dozzle:latest
+    ports:
+      - "9999:8080"
+    environment:
+      - TZ=Asia/Seoul
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - punch-network
+    restart: unless-stopped
+
+networks:
+  punch-network:
+    driver: bridge
+
+volumes:
+  mysql-data:
+  redis-data:
