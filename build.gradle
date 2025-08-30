@@ -49,7 +49,7 @@ dependencies {
     testImplementation 'org.springframework.security:spring-security-test'
 
     // Spring Ai
-    implementation 'org.springframework.ai:spring-ai-starter-model-openai:1.0.1'
+    //implementation 'org.springframework.ai:spring-ai-starter-model-openai:1.0.1'
 
     // OAuth2
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
