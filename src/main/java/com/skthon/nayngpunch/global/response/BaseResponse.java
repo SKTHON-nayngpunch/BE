@@ -23,6 +23,10 @@ public class BaseResponse<T> {
     @Schema(description = "응답 데이터")
     private T data;
 
+    public static <T> BaseResponse<T> success(T data){
+        return new BaseResponse<>(true, 200, "요청이 성공적으로 처리되었습니다.", data);
+    }
+
     public static <T> BaseResponse<T> success(int code, String message, T data) {
         return new BaseResponse<>(true, code, message, data);
     }

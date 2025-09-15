@@ -16,9 +16,12 @@ public class JwtProperties {
     @Value("${jwt.secret}")
     private String secret;
 
-    @Value("{jwt.access-token-validity-in-seconds}")
+    @Value("${jwt.access-token-validity-in-seconds}")
     private int accessTokenValidityInSeconds;
 
-    @Value("{jwt.refresh-token-validity-in-seconds}")
+    @Value("${jwt.refresh-token-validity-in-seconds}")
     private int refreshTokenValidityInSeconds;
+
+    @Value("${server.domain}")
+    private String domain;
 }

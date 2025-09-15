@@ -1,4 +1,4 @@
-package com.skthon.nayngpunch.domain.user;
+package com.skthon.nayngpunch.domain.user.exception;
 
 import com.skthon.nayngpunch.global.exception.model.BaseErrorCode;
 import lombok.AllArgsConstructor;
