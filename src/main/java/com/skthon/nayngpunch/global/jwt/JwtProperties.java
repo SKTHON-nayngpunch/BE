@@ -1,8 +1,12 @@
+/* 
+ * Copyright (c) LikeLion13th Problem not Found 
+ */
 package com.skthon.nayngpunch.global.jwt;
 
-import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+
+import lombok.Getter;
 
 /**
  * JWT 관련 설정 속성
@@ -13,15 +17,15 @@ import org.springframework.stereotype.Component;
 @Getter
 public class JwtProperties {
 
-    @Value("${jwt.secret}")
-    private String secret;
+  @Value("${jwt.secret}")
+  private String secret;
 
-    @Value("${jwt.access-token-validity-in-seconds}")
-    private int accessTokenValidityInSeconds;
+  @Value("${jwt.access-token-validity-in-seconds}")
+  private int accessTokenValidityInSeconds;
 
-    @Value("${jwt.refresh-token-validity-in-seconds}")
-    private int refreshTokenValidityInSeconds;
+  @Value("${jwt.refresh-token-validity-in-seconds}")
+  private int refreshTokenValidityInSeconds;
 
-    @Value("${server.domain}")
-    private String domain;
+  @Value("${server.domain}")
+  private String domain;
 }

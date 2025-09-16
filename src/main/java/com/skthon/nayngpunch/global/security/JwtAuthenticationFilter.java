@@ -1,24 +1,67 @@
+/* 
+ * Copyright (c) LikeLion13th Problem not Found 
+ */
 package com.skthon.nayngpunch.global.security;
+
+import java.io.IOException;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import java.io.IOException;
+import com.skthon.nayngpunch.global.jwt.JwtProvider;
+
+import io.jsonwebtoken.JwtException;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Component
 @Slf4j
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
-    @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
-            throws ServletException, IOException {
+  private final JwtProvider jwtProvider;
+  private final UserDetailsService userDetailsService;
 
+  @Override
+  protected void doFilterInternal(
+      HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+      throws ServletException, IOException {
+    if ("/error".equals(request.getRequestURI())) {
+      filterChain.doFilter(request, response);
+      return;
     }
+
+    try {
+      String token = jwtProvider.extractAccessToken(request);
+
+      if (token != null
+          && jwtProvider.validateToken(token)
+          && jwtProvider.validateTokenType(token, JwtProvider.TOKEN_TYPE_ACCESS)) {
+        if (SecurityContextHolder.getContext().getAuthentication() == null) {
+          String username = jwtProvider.getUsernameFromToken(token);
+          UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+
+          UsernamePasswordAuthenticationToken authentication =
+              new UsernamePasswordAuthenticationToken(
+                  userDetails, null, userDetails.getAuthorities());
+          SecurityContextHolder.getContext().setAuthentication(authentication);
+        }
+      }
+    } catch (JwtException | IllegalArgumentException e) {
+      SecurityContextHolder.clearContext();
+      throw new BadCredentialsException("유효하지 않은 JWT 토큰", e);
+    }
+
+    filterChain.doFilter(request, response);
+  }
 }

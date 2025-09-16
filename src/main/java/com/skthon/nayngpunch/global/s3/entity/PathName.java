@@ -1,9 +1,11 @@
+/* 
+ * Copyright (c) LikeLion13th Problem not Found 
+ */
 package com.skthon.nayngpunch.global.s3.entity;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
 public enum PathName {
-
-    @Schema(description = "프로필사진")
-    PROFILE_IMAGE
+  @Schema(description = "프로필사진")
+  PROFILE_IMAGE
 }
