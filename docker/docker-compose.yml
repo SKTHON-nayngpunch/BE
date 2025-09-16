@@ -51,6 +51,17 @@ services:
       - punch-network
     restart: unless-stopped
 
+  qdrant:
+    image: qdrant/qdrant:v1.12.3
+    ports:
+      - "6333:6333"
+      - "6334:6334"
+    volumes:
+      - qdrant-data:/qdrant/storage
+    networks:
+      - punch-network
+    restart: unless-stopped
+
 networks:
   punch-network:
     driver: bridge
