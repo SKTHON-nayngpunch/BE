@@ -73,7 +73,7 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
     if (jwtProperties.getDomain().equals("localhost")) {
       response.sendRedirect("http://localhost:8080/swagger-ui/index.html");
     } else if (jwtProperties.getDomain().equals("silversieon.store")) {
-      response.sendRedirect("https://www.silversieon.store");
+      response.sendRedirect("https://silversieon.store");
     }
   }
 }
