@@ -1,4 +1,24 @@
 services:
+  app:
+    image: ksieon/punch:latest
+    container_name: punch-app-prod
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_PROFILES_ACTIVE: ${PROFILE:-prod}
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/${DB_NAME}
+      SPRING_DATASOURCE_USERNAME: ${DB_USER}
+      SPRING_DATASOURCE_PASSWORD: ${DB_PASS}
+    command: [ "java", "-jar", "app.jar" ]
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - punch-network
+    restart: unless-stopped
+
   mysql:
     image: mysql:8.0
     expose:
@@ -69,3 +89,4 @@ networks:
 volumes:
   mysql-data:
   redis-data:
+  qdrant-data:
