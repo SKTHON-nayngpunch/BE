@@ -3,8 +3,10 @@
  */
 package com.skthon.nayngpunch.domain.user.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -15,6 +17,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.skthon.nayngpunch.domain.food.entity.Food;
+import com.skthon.nayngpunch.domain.food.repository.FoodRepository;
+import com.skthon.nayngpunch.domain.participation.dto.response.ShareListResponse;
+import com.skthon.nayngpunch.domain.participation.entity.Participation;
+import com.skthon.nayngpunch.domain.participation.entity.SortBy;
+import com.skthon.nayngpunch.domain.participation.repository.ParticipationRepository;
 import com.skthon.nayngpunch.domain.user.dto.request.SignUpRequest;
 import com.skthon.nayngpunch.domain.user.dto.request.UpdateUserRequest;
 import com.skthon.nayngpunch.domain.user.dto.response.SignUpResponse;
@@ -42,6 +50,8 @@ public class UserServiceImpl implements UserService {
   private final PasswordEncoder passwordEncoder;
   private final UserMapper userMapper;
   private final S3Service s3Service;
+  private final ParticipationRepository participationRepository;
+  private final FoodRepository foodRepository;
 
   @Override
   @Transactional
@@ -205,5 +215,55 @@ public class UserServiceImpl implements UserService {
   @Transactional(readOnly = true)
   public UserResultResponse getUserResult() {
     return userMapper.toUserResultResponse(getCurrentUser());
+  }
+
+  @Override
+  @Transactional(readOnly = true)
+  public List<ShareListResponse> getShareList(SortBy sortBy) {
+    User user = getCurrentUser();
+    Long userId = user.getId();
+
+    List<Participation> participations = new ArrayList<>();
+
+    if (sortBy == SortBy.MY_SHARE) {
+      // 내가 작성한 음식 → 음식 id 리스트
+      List<Long> myFoodIds =
+          foodRepository.findAllByUserId(userId).stream().map(Food::getId).toList();
+
+      participations = participationRepository.findAllByFoodIdIn(myFoodIds);
+
+    } else if (sortBy == SortBy.MY_RECEIVE) {
+      participations = participationRepository.findAllByUserId(userId);
+
+    } else if (sortBy == SortBy.ALL) {
+      List<Long> myFoodIds =
+          foodRepository.findAllByUserId(userId).stream().map(Food::getId).toList();
+
+      List<Participation> shareList = participationRepository.findAllByFoodIdIn(myFoodIds);
+      List<Participation> receiveList = participationRepository.findAllByUserId(userId);
+
+      participations = Stream.concat(shareList.stream(), receiveList.stream()).distinct().toList();
+    }
+
+    // Participation → ShareListResponse 변환
+    return participations.stream()
+        .map(
+            p -> {
+              User otherUser;
+              if (p.getUser().getId().equals(userId)) {
+                // 내가 참여자인 경우 → 상대방은 음식 작성자
+                otherUser = p.getFood().getUser();
+              } else {
+                // 내가 작성자인 경우 → 상대방은 참여자
+                otherUser = p.getUser();
+              }
+
+              return ShareListResponse.builder()
+                  .participateId(p.getId())
+                  .userId(otherUser.getId())
+                  .nickname(otherUser.getNickname())
+                  .build();
+            })
+        .toList();
   }
 }

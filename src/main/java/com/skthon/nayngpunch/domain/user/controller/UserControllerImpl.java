@@ -11,6 +11,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.skthon.nayngpunch.domain.participation.dto.response.ShareListResponse;
+import com.skthon.nayngpunch.domain.participation.entity.SortBy;
 import com.skthon.nayngpunch.domain.user.dto.request.SignUpRequest;
 import com.skthon.nayngpunch.domain.user.dto.request.UpdateUserRequest;
 import com.skthon.nayngpunch.domain.user.dto.response.SignUpResponse;
@@ -75,5 +77,11 @@ public class UserControllerImpl implements UserController {
   @Override
   public ResponseEntity<BaseResponse<UserResultResponse>> getUserResult() {
     return ResponseEntity.ok(BaseResponse.success(userService.getUserResult()));
+  }
+
+  @Override
+  public ResponseEntity<BaseResponse<List<ShareListResponse>>> getUserShares(
+      @RequestParam SortBy sortBy) {
+    return ResponseEntity.ok(BaseResponse.success(userService.getShareList(sortBy)));
   }
 }

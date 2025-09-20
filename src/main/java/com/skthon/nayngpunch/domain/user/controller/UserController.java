@@ -12,6 +12,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.skthon.nayngpunch.domain.participation.dto.response.ShareListResponse;
+import com.skthon.nayngpunch.domain.participation.entity.SortBy;
 import com.skthon.nayngpunch.domain.user.dto.request.SignUpRequest;
 import com.skthon.nayngpunch.domain.user.dto.request.UpdateUserRequest;
 import com.skthon.nayngpunch.domain.user.dto.response.SignUpResponse;
@@ -72,7 +74,8 @@ public interface UserController {
   @Operation(summary = "나눔과 관련된 사용자의 정보 조회", description = "메인화면에서 나눔과 관련된 사용자의 정보 조회")
   ResponseEntity<BaseResponse<UserResultResponse>> getUserResult();
 
-  //  @GetMapping("/shares")
-  //  @Operation(summary = "나눔과 관련된 채팅 목록 조회", description = "채팅 화면에서 진행 중인 나눔과 관련된 리스트 조회")
-  //  ResponseEntity<BaseResponse<List<UserResponse>>> getUserShares();
+  @GetMapping("/shares")
+  @Operation(summary = "나눔과 관련된 채팅 목록 조회", description = "채팅 화면에서 진행 중인 나눔과 관련된 리스트 조회")
+  ResponseEntity<BaseResponse<List<ShareListResponse>>> getUserShares(
+      @Parameter(description = "채팅방 조회 기준", example = "ALL") @RequestParam SortBy sortBy);
 }
