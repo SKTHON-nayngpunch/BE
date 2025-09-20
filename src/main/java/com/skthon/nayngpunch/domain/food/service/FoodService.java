@@ -9,8 +9,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Value;
-import java.util.List;
-
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -18,8 +16,8 @@ import org.springframework.web.multipart.MultipartFile;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.skthon.nayngpunch.domain.food.dto.request.FoodCreateRequest;
-import com.skthon.nayngpunch.domain.food.dto.response.FoodDetailResponse;
 import com.skthon.nayngpunch.domain.food.dto.response.FoodAnalysisResponse;
+import com.skthon.nayngpunch.domain.food.dto.response.FoodDetailResponse;
 import com.skthon.nayngpunch.domain.food.dto.response.FoodResponse;
 import com.skthon.nayngpunch.domain.food.dto.response.FoodUrgentItemResponse;
 import com.skthon.nayngpunch.domain.food.entity.Food;
