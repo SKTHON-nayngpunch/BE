@@ -16,10 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.skthon.nayngpunch.domain.food.dto.request.FoodCreateRequest;
-import com.skthon.nayngpunch.domain.food.dto.response.FoodAnalysisResponse;
-import com.skthon.nayngpunch.domain.food.dto.response.FoodDetailResponse;
-import com.skthon.nayngpunch.domain.food.dto.response.FoodResponse;
-import com.skthon.nayngpunch.domain.food.dto.response.FoodUrgentItemResponse;
+import com.skthon.nayngpunch.domain.food.dto.response.*;
 import com.skthon.nayngpunch.domain.food.entity.Food;
 import com.skthon.nayngpunch.domain.food.entity.FoodStatus;
 import com.skthon.nayngpunch.domain.food.exception.FoodErrorCode;
@@ -64,7 +61,7 @@ public class FoodService {
 [출력 형식 — 정확히 3줄]
 1줄: 식재료 이름만 한 단어로.
 2줄: 신선도 점수 정수만 (1~10).
-3줄: 신선도 판단 이유 60~120자, 줄바꿈 없이 한 문단.
+3줄: 신선도 판단 이유 120~150자, 줄바꿈 없이 한 문단.
 """;
 
       // 3. JSON 객체 구성 (Map → JSON)
@@ -263,6 +260,26 @@ public class FoodService {
                     .currentMember(r.getCurrentMember())
                     .remainingSeconds(r.getRemainingSeconds())
                     .build())
+        .toList();
+  }
+
+  @Transactional(readOnly = true)
+  public List<FoodMapResponse> getAllFood() {
+    List<Food> foods = foodRepository.findAll();
+
+    return foods.stream()
+        .map(
+            food -> {
+              User owner = food.getUser(); // 음식 작성자
+
+              return FoodMapResponse.builder()
+                  .foodId(food.getId())
+                  .name(food.getName())
+                  .location(owner.getAddress()) // 주소
+                  .latitude(owner.getLatitude() != null ? owner.getLatitude() : null)
+                  .longitude(owner.getLongitude() != null ? owner.getLongitude() : null)
+                  .build();
+            })
         .toList();
   }
 }

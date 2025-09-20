@@ -18,10 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.skthon.nayngpunch.domain.food.dto.request.FoodCreateRequest;
-import com.skthon.nayngpunch.domain.food.dto.response.FoodAnalysisResponse;
-import com.skthon.nayngpunch.domain.food.dto.response.FoodDetailResponse;
-import com.skthon.nayngpunch.domain.food.dto.response.FoodResponse;
-import com.skthon.nayngpunch.domain.food.dto.response.FoodUrgentItemResponse;
+import com.skthon.nayngpunch.domain.food.dto.response.*;
 import com.skthon.nayngpunch.domain.food.service.FoodService;
 import com.skthon.nayngpunch.global.response.BaseResponse;
 
@@ -100,5 +97,11 @@ public class FoodController {
           String sort) {
     List<FoodUrgentItemResponse> response = foodService.searchFoods(keyword, sort);
     return ResponseEntity.ok(BaseResponse.success(response));
+  }
+
+  @GetMapping("/foods/all")
+  @Operation(summary = "식재료 전체 조회", description = "위도 경도를 포함한 식재료 전체 조회")
+  public ResponseEntity<BaseResponse<List<FoodMapResponse>>> getAllFoods() {
+    return ResponseEntity.ok(BaseResponse.success(foodService.getAllFood()));
   }
 }
