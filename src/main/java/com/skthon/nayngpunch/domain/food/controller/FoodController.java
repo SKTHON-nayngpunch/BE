@@ -1,7 +1,7 @@
 /* 
  * Copyright (c) LikeLion13th Problem not Found 
  */
-package com.skthon.nayngpunch.domain.goods.controller;
+package com.skthon.nayngpunch.domain.food.controller;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;

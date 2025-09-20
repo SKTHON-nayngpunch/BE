@@ -15,7 +15,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
-import com.skthon.nayngpunch.domain.goods.entity.Food;
+import com.skthon.nayngpunch.domain.food.entity.Food;
 import com.skthon.nayngpunch.domain.user.entity.User;
 
 import lombok.AccessLevel;
