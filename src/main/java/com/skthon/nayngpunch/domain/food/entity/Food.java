@@ -71,4 +71,8 @@ public class Food extends BaseTimeEntity {
 
   @Column(name = "analysis", nullable = false, columnDefinition = "TEXT")
   private String analysis; // 설명
+
+  public void addOutCount() {
+    this.outCount = this.outCount + 1;
+  }
 }
