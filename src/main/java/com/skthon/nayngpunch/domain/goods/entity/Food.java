@@ -1,7 +1,10 @@
+/* 
+ * Copyright (c) LikeLion13th Problem not Found 
+ */
 package com.skthon.nayngpunch.domain.goods.entity;
 
-import com.skthon.nayngpunch.domain.user.entity.User;
-import com.skthon.nayngpunch.global.common.BaseTimeEntity;
+import java.time.LocalDate;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -13,7 +16,10 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import java.time.LocalDate;
+
+import com.skthon.nayngpunch.domain.user.entity.User;
+import com.skthon.nayngpunch.global.common.BaseTimeEntity;
+
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

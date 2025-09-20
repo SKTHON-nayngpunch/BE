@@ -1,8 +1,8 @@
+/* 
+ * Copyright (c) LikeLion13th Problem not Found 
+ */
 package com.skthon.nayngpunch.domain.participation.entity;
 
-
-import com.skthon.nayngpunch.domain.goods.entity.Food;
-import com.skthon.nayngpunch.domain.user.entity.User;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -14,6 +14,10 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+
+import com.skthon.nayngpunch.domain.goods.entity.Food;
+import com.skthon.nayngpunch.domain.user.entity.User;
+
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
