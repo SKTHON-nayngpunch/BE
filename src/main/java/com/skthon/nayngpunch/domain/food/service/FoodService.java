@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Value;
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -16,8 +18,10 @@ import org.springframework.web.multipart.MultipartFile;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.skthon.nayngpunch.domain.food.dto.request.FoodCreateRequest;
+import com.skthon.nayngpunch.domain.food.dto.response.FoodDetailResponse;
 import com.skthon.nayngpunch.domain.food.dto.response.FoodAnalysisResponse;
 import com.skthon.nayngpunch.domain.food.dto.response.FoodResponse;
+import com.skthon.nayngpunch.domain.food.dto.response.FoodUrgentItemResponse;
 import com.skthon.nayngpunch.domain.food.entity.Food;
 import com.skthon.nayngpunch.domain.food.entity.FoodStatus;
 import com.skthon.nayngpunch.domain.food.exception.FoodErrorCode;
@@ -158,5 +162,53 @@ public class FoodService {
                 .build());
 
     return FoodMapper.toFoodCreateResponse(imageUrl, saved);
+  }
+
+  @Transactional(readOnly = true)
+  public List<FoodUrgentItemResponse> getClosingSoonList() {
+    return foodRepository.findClosingSoon().stream()
+        .map(
+            p ->
+                FoodUrgentItemResponse.builder()
+                    .foodId(p.getFoodId())
+                    .foodImageUrl(p.getFoodImageUrl())
+                    .createdDate(p.getCreatedDate().toLocalDate())
+                    .title(p.getTitle())
+                    .location(p.getLocation())
+                    .name(p.getName())
+                    .totalCount(p.getTotalCount())
+                    .conditionScore(p.getConditionScore())
+                    .maxMember(p.getMaxMember())
+                    .currentMember(p.getCurrentMember())
+                    .remainingSeconds(p.getRemainingSeconds())
+                    .build())
+        .toList();
+  }
+
+  @Transactional(readOnly = true)
+  public FoodDetailResponse getDetail(Long foodId) {
+    var p =
+        foodRepository
+            .findDetailById(foodId)
+            .orElseThrow(() -> new CustomException(FoodErrorCode.FOOD_NOT_FOUND));
+
+    return FoodDetailResponse.builder()
+        .foodId(p.getFoodId())
+        .foodImageUrl(p.getFoodImageUrl())
+        .createdDate(p.getCreatedDate().toLocalDate())
+        .title(p.getTitle())
+        .writerProfileImageUrl(p.getWriterProfileImageUrl())
+        .writerNickname(p.getWriterNickname())
+        .writerAddress(p.getWriterAddress())
+        .writerFreshScore(p.getWriterFreshScore())
+        .name(p.getName())
+        .totalCount(p.getTotalCount())
+        .conditionScore(p.getConditionScore())
+        .remainingSeconds(p.getRemainingSeconds())
+        .analysis(p.getAnalysis())
+        .content(p.getContent())
+        .maxMember(p.getMaxMember())
+        .currentMember(p.getCurrentMember()) // = out_count
+        .build();
   }
 }
