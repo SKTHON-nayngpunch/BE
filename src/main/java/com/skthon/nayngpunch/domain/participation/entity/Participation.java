@@ -34,8 +34,8 @@ public class Participation {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Column(name = "participation_id", nullable = false)
-  private Long id; // 참여 아이디
+  @Column(name = "id")
+  private Long id;
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "user_id", nullable = false)
@@ -47,5 +47,10 @@ public class Participation {
 
   @Enumerated(EnumType.STRING)
   @Column(name = "status", nullable = false, length = 20)
-  private ParticipationStatus status; // 상태 (WAITING, COMPLETE, FAIL)
+  @Builder.Default
+  private ParticipationStatus status = ParticipationStatus.WAITING; // 상태 (WAITING, COMPLETE, FAIL)
+
+  public void updateStatus(ParticipationStatus status) {
+    this.status = status;
+  }
 }

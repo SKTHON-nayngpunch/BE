@@ -4,18 +4,15 @@
 package com.skthon.nayngpunch.domain.user.entity;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.skthon.nayngpunch.domain.food.entity.Food;
+import com.skthon.nayngpunch.domain.participation.entity.Participation;
 import com.skthon.nayngpunch.global.common.BaseTimeEntity;
 
 import lombok.AccessLevel;
@@ -50,6 +47,38 @@ public class User extends BaseTimeEntity {
   @Column(name = "profile_image_url", nullable = false)
   private String profileImageUrl;
 
+  @Column(name = "address")
+  private String address;
+
+  @Column(name = "phone_number")
+  private String phoneNumber;
+
+  @Column(name = "chance_count", nullable = false)
+  @Builder.Default
+  private Long chanceCount = 5L;
+
+  @Column(name = "fresh_score", nullable = false)
+  @Builder.Default
+  private Float freshScore = 0.0f;
+
+  @Column(name = "share_count", nullable = false)
+  @Builder.Default
+  private Long shareCount = 0L;
+
+  @Column(name = "receive_count", nullable = false)
+  @Builder.Default
+  private Long receiveCount = 0L;
+
+  @Column(name = "carbon_count", nullable = false)
+  @Builder.Default
+  private Float carbonCount = 0.00f;
+
+  @Column(name = "latitude")
+  private Float latitude;
+
+  @Column(name = "longitude")
+  private Float longitude;
+
   @Column(name = "role", nullable = false)
   @Enumerated(EnumType.STRING)
   @Builder.Default
@@ -61,6 +90,14 @@ public class User extends BaseTimeEntity {
 
   @Column(name = "deleted_at")
   private LocalDateTime deletedAt;
+
+  @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+  @Builder.Default
+  private List<Food> foods = new ArrayList<>();
+
+  @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+  @Builder.Default
+  private List<Participation> participations = new ArrayList<>();
 
   public static User fromOAuth(String email, String nickname, String profileImageUrl) {
     return User.builder()
@@ -74,5 +111,25 @@ public class User extends BaseTimeEntity {
 
   public void updateProfileImageUrl(String profileImageUrl) {
     this.profileImageUrl = profileImageUrl;
+  }
+
+  public void updateProfile(
+      String nickname, String phoneNumber, String address, Float latitude, Float longitude) {
+    this.nickname = nickname;
+    this.phoneNumber = phoneNumber;
+    this.address = address;
+    this.latitude = latitude;
+    this.longitude = longitude;
+  }
+
+  public void updateShareResult(Boolean isParticipation, Float addCarbonCount) {
+    this.carbonCount += addCarbonCount;
+    if (isParticipation) {
+      chanceCount = chanceCount - 1;
+      receiveCount = receiveCount + 1;
+    } else {
+      chanceCount = chanceCount + 1;
+      shareCount = shareCount + 1;
+    }
   }
 }

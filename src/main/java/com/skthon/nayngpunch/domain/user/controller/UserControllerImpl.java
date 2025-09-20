@@ -8,15 +8,15 @@ import java.util.List;
 import jakarta.validation.Valid;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.skthon.nayngpunch.domain.user.dto.request.SignUpRequest;
+import com.skthon.nayngpunch.domain.user.dto.request.UpdateUserRequest;
 import com.skthon.nayngpunch.domain.user.dto.response.SignUpResponse;
 import com.skthon.nayngpunch.domain.user.dto.response.UserDetailResponse;
 import com.skthon.nayngpunch.domain.user.dto.response.UserResponse;
+import com.skthon.nayngpunch.domain.user.dto.response.UserResultResponse;
 import com.skthon.nayngpunch.domain.user.service.UserService;
 import com.skthon.nayngpunch.global.response.BaseResponse;
 
@@ -64,5 +64,16 @@ public class UserControllerImpl implements UserController {
     List<UserDetailResponse> userDetailResponses = userService.getAllUsers();
 
     return ResponseEntity.ok(BaseResponse.success(userDetailResponses));
+  }
+
+  @Override
+  public ResponseEntity<BaseResponse<String>> updateUserProfile(
+      @RequestBody @Valid UpdateUserRequest updateUserRequest) {
+    return ResponseEntity.ok(BaseResponse.success(userService.updateUser(updateUserRequest)));
+  }
+
+  @Override
+  public ResponseEntity<BaseResponse<UserResultResponse>> getUserResult() {
+    return ResponseEntity.ok(BaseResponse.success(userService.getUserResult()));
   }
 }

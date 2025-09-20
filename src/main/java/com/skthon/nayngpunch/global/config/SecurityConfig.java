@@ -114,7 +114,7 @@ public class SecurityConfig {
     http.authorizeHttpRequests(
         auth ->
             auth.requestMatchers("/swagger-ui/**", "/v3/api-docs/**")
-                .hasRole("DEVELOPER")
+                .hasRole("USER")
                 .requestMatchers(
                     "/api/users/sign-up",
                     "/api/auths/login",

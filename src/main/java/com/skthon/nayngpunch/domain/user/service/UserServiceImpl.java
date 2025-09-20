@@ -16,9 +16,11 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.skthon.nayngpunch.domain.user.dto.request.SignUpRequest;
+import com.skthon.nayngpunch.domain.user.dto.request.UpdateUserRequest;
 import com.skthon.nayngpunch.domain.user.dto.response.SignUpResponse;
 import com.skthon.nayngpunch.domain.user.dto.response.UserDetailResponse;
 import com.skthon.nayngpunch.domain.user.dto.response.UserResponse;
+import com.skthon.nayngpunch.domain.user.dto.response.UserResultResponse;
 import com.skthon.nayngpunch.domain.user.entity.User;
 import com.skthon.nayngpunch.domain.user.exception.UserErrorCode;
 import com.skthon.nayngpunch.domain.user.mapper.UserMapper;
@@ -176,5 +178,32 @@ public class UserServiceImpl implements UserService {
     List<User> users = userRepository.findAll();
 
     return users.stream().map(userMapper::toUserDetailResponse).toList();
+  }
+
+  @Override
+  @Transactional
+  public String updateUser(UpdateUserRequest updateUserRequest) {
+    Long userId = getCurrentUser().getId();
+
+    User user =
+        userRepository
+            .findById(userId)
+            .orElseThrow(() -> new CustomException(UserErrorCode.USER_NOT_FOUND));
+
+    user.updateProfile(
+        updateUserRequest.getNickname(),
+        updateUserRequest.getPhoneNumber(),
+        updateUserRequest.getAddress(),
+        updateUserRequest.getLatitude(),
+        updateUserRequest.getLongitude());
+    userRepository.save(user);
+
+    return "정보 변경에 성공했습니다.";
+  }
+
+  @Override
+  @Transactional(readOnly = true)
+  public UserResultResponse getUserResult() {
+    return userMapper.toUserResultResponse(getCurrentUser());
   }
 }
