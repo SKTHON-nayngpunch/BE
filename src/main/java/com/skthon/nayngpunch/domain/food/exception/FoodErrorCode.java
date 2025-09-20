@@ -14,8 +14,8 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum FoodErrorCode implements BaseErrorCode {
   FRESHNESS_TOO_LOW("FOOD_4041", "신선도 7 미만은 나눔 등록이 불가합니다.", HttpStatus.BAD_REQUEST),
-  FOOD_NOT_FOUND("FOOD_4042", "해당 모집글을 찾을 수 없습니다.", HttpStatus.NOT_FOUND);
-
+  FOOD_NOT_FOUND("FOOD_4042", "해당 모집글을 찾을 수 없습니다.", HttpStatus.NOT_FOUND),
+  NO_SHARE_HISTORY("FOOD_4043", "나눔 내역이 없습니다.", HttpStatus.BAD_REQUEST);
   private final String code;
   private final String message;
   private final HttpStatus status;

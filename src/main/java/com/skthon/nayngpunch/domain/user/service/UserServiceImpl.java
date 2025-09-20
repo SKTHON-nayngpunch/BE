@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.skthon.nayngpunch.domain.food.entity.Food;
+import com.skthon.nayngpunch.domain.food.exception.FoodErrorCode;
 import com.skthon.nayngpunch.domain.food.repository.FoodRepository;
 import com.skthon.nayngpunch.domain.participation.dto.response.ShareListResponse;
 import com.skthon.nayngpunch.domain.participation.entity.Participation;
@@ -226,10 +227,8 @@ public class UserServiceImpl implements UserService {
     List<Participation> participations = new ArrayList<>();
 
     if (sortBy == SortBy.MY_SHARE) {
-      // 내가 작성한 음식 → 음식 id 리스트
       List<Long> myFoodIds =
           foodRepository.findAllByUserId(userId).stream().map(Food::getId).toList();
-
       participations = participationRepository.findAllByFoodIdIn(myFoodIds);
 
     } else if (sortBy == SortBy.MY_RECEIVE) {
@@ -238,24 +237,23 @@ public class UserServiceImpl implements UserService {
     } else if (sortBy == SortBy.ALL) {
       List<Long> myFoodIds =
           foodRepository.findAllByUserId(userId).stream().map(Food::getId).toList();
-
       List<Participation> shareList = participationRepository.findAllByFoodIdIn(myFoodIds);
       List<Participation> receiveList = participationRepository.findAllByUserId(userId);
-
       participations = Stream.concat(shareList.stream(), receiveList.stream()).distinct().toList();
     }
 
-    // Participation → ShareListResponse 변환
+    if (participations.isEmpty()) {
+      throw new CustomException(FoodErrorCode.NO_SHARE_HISTORY);
+    }
+
     return participations.stream()
         .map(
             p -> {
               User otherUser;
               if (p.getUser().getId().equals(userId)) {
-                // 내가 참여자인 경우 → 상대방은 음식 작성자
-                otherUser = p.getFood().getUser();
+                otherUser = p.getFood().getUser(); // 내가 참여자
               } else {
-                // 내가 작성자인 경우 → 상대방은 참여자
-                otherUser = p.getUser();
+                otherUser = p.getUser(); // 내가 작성자
               }
 
               return ShareListResponse.builder()
