@@ -43,8 +43,11 @@ public class Food extends BaseTimeEntity {
   @JoinColumn(name = "user_id", nullable = false) // FK 컬럼명
   private User user; // 사용자 아이디
 
+  @Column(name = "title", nullable = true)
+  private String title; // 제목
+
   @Column(name = "name", nullable = true)
-  private String name; // 제품명
+  private String name; // 음식명
 
   @Column(name = "content", nullable = false, columnDefinition = "TEXT")
   private String content; // 설명
@@ -64,4 +67,10 @@ public class Food extends BaseTimeEntity {
   @Enumerated(EnumType.STRING)
   @Column(name = "status", nullable = false, length = 20)
   private FoodStatus status;
+
+  @Column(name = "out_count", nullable = false)
+  private Integer outCount; // 최대 모집 멤버
+
+  @Column(name = "analysis", nullable = false, columnDefinition = "TEXT")
+  private String analysis; // 설명
 }
