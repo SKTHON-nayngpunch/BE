@@ -3,16 +3,22 @@
  */
 package com.skthon.nayngpunch.domain.food.controller;
 
+import java.util.List;
+
 import jakarta.validation.Valid;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.skthon.nayngpunch.domain.food.dto.request.FoodCreateRequest;
+import com.skthon.nayngpunch.domain.food.dto.response.FoodDetailResponse;
 import com.skthon.nayngpunch.domain.food.dto.response.FoodResponse;
+import com.skthon.nayngpunch.domain.food.dto.response.FoodUrgentItemResponse;
 import com.skthon.nayngpunch.domain.food.service.FoodService;
 import com.skthon.nayngpunch.global.response.BaseResponse;
 
@@ -36,5 +42,19 @@ public class FoodController {
           FoodCreateRequest foodCreateRequest) {
     FoodResponse.FoodCreateResponse response = foodService.createFood(foodCreateRequest);
     return ResponseEntity.ok(BaseResponse.success(response));
+  }
+
+  @Operation(summary = "마감 임박 목록", description = "마감 하루 전 + 남은 슬롯 ≤ 2 인 글 목록 반환")
+  @GetMapping("/closing-soon/foods")
+  public ResponseEntity<BaseResponse<List<FoodUrgentItemResponse>>> getClosingSoon() {
+    List<FoodUrgentItemResponse> items = foodService.getClosingSoonList();
+    return ResponseEntity.ok(BaseResponse.success(items));
+  }
+
+  @Operation(summary = "모집글 상세 조회", description = "foodId로 모집글 상세 조회")
+  @GetMapping("/foods/{foodId}")
+  public ResponseEntity<BaseResponse<FoodDetailResponse>> getDetail(@PathVariable Long foodId) {
+    var res = foodService.getDetail(foodId);
+    return ResponseEntity.ok(BaseResponse.success(res));
   }
 }
