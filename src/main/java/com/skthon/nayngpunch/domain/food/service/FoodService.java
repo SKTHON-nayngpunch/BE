@@ -209,4 +209,60 @@ public class FoodService {
         .currentMember(p.getCurrentMember()) // = out_count
         .build();
   }
+
+  //  @Transactional(readOnly = true)
+  //  public List<FoodUrgentItemResponse> searchClosingSoon(String keyword) {
+  //    // 널/공백 방어
+  //    String q = (keyword == null) ? "" : keyword.trim();
+  //
+  //    return foodRepository.searchClosingSoonByKeyword(q).stream()
+  //        .map(
+  //            p ->
+  //                FoodUrgentItemResponse.builder()
+  //                    .foodId(p.getFoodId())
+  //                    .foodImageUrl(p.getFoodImageUrl())
+  //                    .createdDate(p.getCreatedDate().toLocalDate())
+  //                    .title(p.getTitle())
+  //                    .location(p.getLocation())
+  //                    .name(p.getName())
+  //                    .totalCount(p.getTotalCount())
+  //                    .conditionScore(p.getConditionScore())
+  //                    .maxMember(p.getMaxMember())
+  //                    .currentMember(p.getCurrentMember())
+  //                    .remainingSeconds(p.getRemainingSeconds())
+  //                    .build())
+  //        .toList();
+  //  }
+  @Transactional(readOnly = true)
+  public List<FoodUrgentItemResponse> searchFoods(String keyword, String sort) {
+    List<FoodRepository.FoodListProjection> results;
+
+    switch (sort.toLowerCase()) {
+      case "freshness":
+        results = foodRepository.findByKeywordOrderByFreshness(keyword);
+        break;
+      case "deadline":
+      default:
+        results = foodRepository.findByKeywordOrderByDeadline(keyword);
+        break;
+    }
+
+    return results.stream()
+        .map(
+            r ->
+                FoodUrgentItemResponse.builder()
+                    .foodId(r.getFoodId())
+                    .foodImageUrl(r.getFoodImageUrl())
+                    .createdDate(r.getCreatedDate().toLocalDate())
+                    .title(r.getTitle())
+                    .location(r.getLocation())
+                    .name(r.getName())
+                    .totalCount(r.getTotalCount())
+                    .conditionScore(r.getConditionScore())
+                    .maxMember(r.getMaxMember())
+                    .currentMember(r.getCurrentMember())
+                    .remainingSeconds(r.getRemainingSeconds())
+                    .build())
+        .toList();
+  }
 }

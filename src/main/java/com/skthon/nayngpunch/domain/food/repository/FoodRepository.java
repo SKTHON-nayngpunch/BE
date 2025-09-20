@@ -145,4 +145,152 @@ public interface FoodRepository extends JpaRepository<Food, Long> {
       """,
       nativeQuery = true)
   Optional<FoodDetailProjection> findDetailById(Long foodId);
+
+  //
+  //  interface FoodUrgentSearchProjection {
+  //    Long getFoodId();
+  //
+  //    String getFoodImageUrl();
+  //
+  //    java.sql.Date getCreatedDate();
+  //
+  //    String getTitle();
+  //
+  //    String getLocation();
+  //
+  //    String getName();
+  //
+  //    Integer getTotalCount();
+  //
+  //    Integer getConditionScore();
+  //
+  //    Integer getMaxMember();
+  //
+  //    Integer getCurrentMember();
+  //
+  //    Long getRemainingSeconds();
+  //  }
+  //
+  //  @Query(
+  //      value =
+  //          """
+  //      SELECT
+  //        f.food_id                          AS foodId,
+  //        f.food_image_url                   AS foodImageUrl,
+  //        DATE(f.created_at)                 AS createdDate,
+  //        f.title                            AS title,
+  //        u.address                          AS location,
+  //        f.name                             AS name,
+  //        f.total_count                      AS totalCount,
+  //        f.condition_score                  AS conditionScore,
+  //        f.max_member                       AS maxMember,
+  //        f.out_count                        AS currentMember,
+  //        TIMESTAMPDIFF(
+  //          SECOND,
+  //          NOW(),
+  //          DATE_ADD(f.created_at, INTERVAL 3 DAY)
+  //        )                                   AS remainingSeconds
+  //      FROM food f
+  //      JOIN users u ON u.id = f.user_id
+  //      WHERE f.status = 'WAITING'
+  //        AND DATE_ADD(f.created_at, INTERVAL 3 DAY) > NOW()           -- 만료 제외
+  //        AND (
+  //              f.name  LIKE CONCAT('%', :keyword, '%')
+  //           OR f.title LIKE CONCAT('%', :keyword, '%')
+  //           OR f.content LIKE CONCAT('%', :keyword, '%')
+  //        )
+  //      HAVING
+  //          (remainingSeconds BETWEEN 0 AND 86400)                     -- 마감 24시간 이내
+  //       OR (maxMember - currentMember) <= 2                           -- 또는 남은 슬롯 ≤ 2
+  //      ORDER BY remainingSeconds ASC
+  //      """,
+  //      nativeQuery = true)
+  //  List<FoodUrgentProjection> searchClosingSoonByKeyword(String keyword);
+  interface FoodListProjection {
+    Long getFoodId();
+
+    String getFoodImageUrl();
+
+    java.sql.Date getCreatedDate();
+
+    String getTitle();
+
+    String getLocation();
+
+    String getName();
+
+    Integer getTotalCount();
+
+    Integer getConditionScore();
+
+    Integer getMaxMember();
+
+    Integer getCurrentMember();
+
+    Long getRemainingSeconds();
+  }
+
+  // 마감임박순
+  @Query(
+      value =
+          """
+      SELECT
+        f.food_id AS foodId,
+        f.food_image_url AS foodImageUrl,
+        DATE(f.created_at) AS createdDate,
+        f.title AS title,
+        u.address AS location,
+        f.name AS name,
+        f.total_count AS totalCount,
+        f.condition_score AS conditionScore,
+        f.max_member AS maxMember,
+        (
+          SELECT COUNT(*)
+          FROM participation p
+          WHERE p.food_id = f.food_id
+          AND p.status IN ('WAITING','COMPLETE')
+        ) AS currentMember,
+        TIMESTAMPDIFF(
+          SECOND, NOW(), DATE_ADD(f.created_at, INTERVAL 3 DAY)
+        ) AS remainingSeconds
+      FROM food f
+      JOIN users u ON u.id = f.user_id
+      WHERE f.status = 'WAITING'
+        AND f.name LIKE %:keyword%
+      ORDER BY remainingSeconds ASC
+      """,
+      nativeQuery = true)
+  List<FoodListProjection> findByKeywordOrderByDeadline(String keyword);
+
+  // 신선도순
+  @Query(
+      value =
+          """
+      SELECT
+        f.food_id AS foodId,
+        f.food_image_url AS foodImageUrl,
+        DATE(f.created_at) AS createdDate,
+        f.title AS title,
+        u.address AS location,
+        f.name AS name,
+        f.total_count AS totalCount,
+        f.condition_score AS conditionScore,
+        f.max_member AS maxMember,
+        (
+          SELECT COUNT(*)
+          FROM participation p
+          WHERE p.food_id = f.food_id
+          AND p.status IN ('WAITING','COMPLETE')
+        ) AS currentMember,
+        TIMESTAMPDIFF(
+          SECOND, NOW(), DATE_ADD(f.created_at, INTERVAL 3 DAY)
+        ) AS remainingSeconds
+      FROM food f
+      JOIN users u ON u.id = f.user_id
+      WHERE f.status = 'WAITING'
+        AND f.name LIKE %:keyword%
+      ORDER BY conditionScore DESC
+      """,
+      nativeQuery = true)
+  List<FoodListProjection> findByKeywordOrderByFreshness(String keyword);
 }

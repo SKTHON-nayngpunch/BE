@@ -78,4 +78,27 @@ public class FoodController {
     var res = foodService.getDetail(foodId);
     return ResponseEntity.ok(BaseResponse.success(res));
   }
+
+  //
+  //  @Operation(
+  //      summary = "키워드 검색(마감임박순)",
+  //      description = "name/title/content에 키워드가 포함된 모집글을 마감임박 순으로 조회")
+  //  @GetMapping("/foods/search")
+  //  public ResponseEntity<BaseResponse<List<FoodUrgentItemResponse>>> search(
+  //      @Parameter(description = "검색 키워드", example = "브로콜리") @RequestParam("q") String keyword) {
+  //
+  //    var data = foodService.searchClosingSoon(keyword);
+  //    return ResponseEntity.ok(BaseResponse.success(data));
+  //  }
+
+  @GetMapping("/foods/search")
+  @Operation(summary = "식재료 검색", description = "식재료 이름으로 모집글을 검색하고 정렬 기준(마감임박/신선도순)에 따라 정렬합니다.")
+  public ResponseEntity<BaseResponse<List<FoodUrgentItemResponse>>> searchFoods(
+      @Parameter(description = "검색할 식재료 이름") @RequestParam String keyword,
+      @Parameter(description = "정렬 기준 (deadline, freshness)")
+          @RequestParam(defaultValue = "deadline")
+          String sort) {
+    List<FoodUrgentItemResponse> response = foodService.searchFoods(keyword, sort);
+    return ResponseEntity.ok(BaseResponse.success(response));
+  }
 }
