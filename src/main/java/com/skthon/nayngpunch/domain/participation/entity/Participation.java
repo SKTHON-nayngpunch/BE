@@ -48,7 +48,7 @@ public class Participation {
   @Enumerated(EnumType.STRING)
   @Column(name = "status", nullable = false, length = 20)
   @Builder.Default
-  private ParticipationStatus status = ParticipationStatus.WAITING; // 상태 (WAITING, COMPLETE, FAIL)
+  private ParticipationStatus status = ParticipationStatus.STARTED; // 상태 (WAITING, COMPLETE, FAIL)
 
   public void updateStatus(ParticipationStatus status) {
     this.status = status;

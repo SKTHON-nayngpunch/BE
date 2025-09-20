@@ -16,9 +16,6 @@ import lombok.NoArgsConstructor;
 @Schema(title = "FoodAnalysisResponse: 사진 분석 즉시 응답 DTO")
 public class FoodAnalysisResponse {
 
-  @Schema(description = "업로드된 이미지 URL", example = "https://s3.../img_abc.jpg")
-  private String foodImageUrl;
-
   @Schema(description = "AI가 판별한 식재료 이름", example = "양파")
   private String name;
 

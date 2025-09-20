@@ -128,12 +128,9 @@ public class S3ServiceImpl implements S3Service {
   }
 
   private String getPrefix(PathName pathName) {
-    return "T";
-    //        return switch (pathName) {
-    //            case PROFILE_IMAGE -> s3Config.getProfileImagePath();
-    //            case PIECE -> s3Config.getPiecePath();
-    //            case PIECE_DETAIL -> s3Config.getPieceDetailPath();
-    //            case EXHIBITION -> s3Config.getExhibitionPath();
-    //        };
+    return switch (pathName) {
+      case PROFILE_IMAGE -> s3Config.getProfileImagePath();
+      case FOOD -> s3Config.getFoodPath();
+    };
   }
 }

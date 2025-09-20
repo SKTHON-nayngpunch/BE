@@ -7,5 +7,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 public enum PathName {
   @Schema(description = "프로필사진")
-  PROFILE_IMAGE
+  PROFILE_IMAGE,
+  @Schema(description = "음식")
+  FOOD,
 }

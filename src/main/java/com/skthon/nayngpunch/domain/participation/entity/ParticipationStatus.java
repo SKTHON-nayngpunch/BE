@@ -4,7 +4,7 @@
 package com.skthon.nayngpunch.domain.participation.entity;
 
 public enum ParticipationStatus {
-  WAITING,
+  STARTED,
   SUB_COMPLETE,
   COMPLETE, // 신청 후, 나눔 완료
   FAIL

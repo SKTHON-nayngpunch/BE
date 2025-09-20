@@ -35,11 +35,6 @@ public class FoodCreateRequest {
               + "편하게 채팅 주세요!")
   private String content;
 
-  // ↓↓↓ 사진 분석으로 받은 값들도 함께 보내기
-  @NotBlank
-  @Schema(description = "업로드된 이미지 URL", example = "https://s3.../img_abc.jpg")
-  private String foodImageUrl;
-
   @NotBlank
   @Schema(description = "식재료 이름", example = "양파")
   private String name;
