@@ -53,6 +53,7 @@ dependencies {
 
     // Spring Ai
     implementation 'org.springframework.ai:spring-ai-starter-model-openai:1.0.1'
+    implementation 'com.squareup.okhttp3:okhttp:4.12.0'
 
     // OAuth2
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'

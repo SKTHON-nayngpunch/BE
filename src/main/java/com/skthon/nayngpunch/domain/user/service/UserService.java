@@ -8,9 +8,11 @@ import java.util.List;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.skthon.nayngpunch.domain.user.dto.request.SignUpRequest;
+import com.skthon.nayngpunch.domain.user.dto.request.UpdateUserRequest;
 import com.skthon.nayngpunch.domain.user.dto.response.SignUpResponse;
 import com.skthon.nayngpunch.domain.user.dto.response.UserDetailResponse;
 import com.skthon.nayngpunch.domain.user.dto.response.UserResponse;
+import com.skthon.nayngpunch.domain.user.dto.response.UserResultResponse;
 import com.skthon.nayngpunch.domain.user.entity.User;
 import com.skthon.nayngpunch.global.exception.CustomException;
 
@@ -77,4 +79,8 @@ public interface UserService {
    * @return 모든 사용자의 {@link UserDetailResponse} 목록
    */
   List<UserDetailResponse> getAllUsers();
+
+  String updateUser(UpdateUserRequest updateUserRequest);
+
+  UserResultResponse getUserResult();
 }

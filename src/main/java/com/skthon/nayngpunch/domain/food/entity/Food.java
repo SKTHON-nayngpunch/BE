@@ -3,8 +3,6 @@
  */
 package com.skthon.nayngpunch.domain.food.entity;
 
-import java.time.LocalDate;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -43,6 +41,9 @@ public class Food extends BaseTimeEntity {
   @JoinColumn(name = "user_id", nullable = false) // FK 컬럼명
   private User user; // 사용자 아이디
 
+  @Column(name = "food_image_url", length = 500, nullable = false)
+  private String foodImageUrl;
+
   @Column(name = "title", nullable = true)
   private String title; // 제목
 
@@ -51,9 +52,6 @@ public class Food extends BaseTimeEntity {
 
   @Column(name = "content", nullable = false, columnDefinition = "TEXT")
   private String content; // 설명
-
-  @Column(name = "start_date", nullable = false)
-  private LocalDate startDate; // 모집 시작일 (끝나는 날짜는 모집 시작일 기준 3일)
 
   @Column(name = "max_member", nullable = false)
   private Integer maxMember; // 최대 모집 멤버
@@ -73,4 +71,8 @@ public class Food extends BaseTimeEntity {
 
   @Column(name = "analysis", nullable = false, columnDefinition = "TEXT")
   private String analysis; // 설명
+
+  public void addOutCount() {
+    this.outCount = this.outCount + 1;
+  }
 }

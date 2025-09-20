@@ -9,6 +9,7 @@ import com.skthon.nayngpunch.domain.user.dto.request.SignUpRequest;
 import com.skthon.nayngpunch.domain.user.dto.response.SignUpResponse;
 import com.skthon.nayngpunch.domain.user.dto.response.UserDetailResponse;
 import com.skthon.nayngpunch.domain.user.dto.response.UserResponse;
+import com.skthon.nayngpunch.domain.user.dto.response.UserResultResponse;
 import com.skthon.nayngpunch.domain.user.entity.Role;
 import com.skthon.nayngpunch.domain.user.entity.User;
 
@@ -45,6 +46,17 @@ public class UserMapper {
         .userId(user.getId())
         .nickname(user.getNickname())
         .profileImageUrl(user.getProfileImageUrl())
+        .build();
+  }
+
+  public UserResultResponse toUserResultResponse(User user) {
+    return UserResultResponse.builder()
+        .userId(user.getId())
+        .nickname(user.getNickname())
+        .chanceCount(user.getChanceCount())
+        .carbonCount(user.getCarbonCount())
+        .shareCount(user.getShareCount())
+        .receiveCount(user.getReceiveCount())
         .build();
   }
 }

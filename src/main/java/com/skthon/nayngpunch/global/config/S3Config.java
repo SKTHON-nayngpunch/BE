@@ -39,6 +39,9 @@ public class S3Config {
   @Value("${cloud.aws.s3.path.profile-image}")
   private String profileImagePath;
 
+  @Value("${cloud.aws.s3.path.food}")
+  private String foodPath;
+
   @PostConstruct
   public void init() {
     this.awsCredentials = new BasicAWSCredentials(accessKey, secretKey);
