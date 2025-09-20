@@ -7,6 +7,8 @@ import java.util.List;
 
 import org.springframework.web.multipart.MultipartFile;
 
+import com.skthon.nayngpunch.domain.participation.dto.response.ShareListResponse;
+import com.skthon.nayngpunch.domain.participation.entity.SortBy;
 import com.skthon.nayngpunch.domain.user.dto.request.SignUpRequest;
 import com.skthon.nayngpunch.domain.user.dto.request.UpdateUserRequest;
 import com.skthon.nayngpunch.domain.user.dto.response.SignUpResponse;
@@ -83,4 +85,6 @@ public interface UserService {
   String updateUser(UpdateUserRequest updateUserRequest);
 
   UserResultResponse getUserResult();
+
+  List<ShareListResponse> getShareList(SortBy sortBy);
 }

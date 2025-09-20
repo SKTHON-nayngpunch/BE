@@ -293,4 +293,6 @@ public interface FoodRepository extends JpaRepository<Food, Long> {
       """,
       nativeQuery = true)
   List<FoodListProjection> findByKeywordOrderByFreshness(String keyword);
+
+  List<Food> findAllByUserId(Long userId);
 }
